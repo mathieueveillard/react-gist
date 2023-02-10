@@ -2,8 +2,10 @@ type VirtualDomEvents = {
   onClick?: () => void;
 };
 
+type Tag = "div" | "button";
+
 export type VirtualDomElement = {
-  tag: "div";
+  tag: Tag;
   className?: string;
   children: string | VirtualDomElement[];
   events: VirtualDomEvents;
@@ -11,7 +13,7 @@ export type VirtualDomElement = {
 
 export type Component<Props extends {}> = (props: Props) => VirtualDomElement;
 
-const createElement = (tag: "div"): HTMLElement => {
+const createElement = (tag: Tag): HTMLElement => {
   return document.createElement(tag);
 };
 
@@ -55,10 +57,55 @@ const interpret = ({ tag, className = "", children, events }: VirtualDomElement)
   return domElement;
 };
 
-const bootstrap = (app: Component<{}>): void => {
-  const root = document.getElementById("root");
-  const domElement = interpret(app({}));
-  root?.appendChild(domElement);
+type GetState<State> = () => State;
+
+type SetState<State> = (state: State) => void;
+
+type GetSetState<State> = [GetState<State>, SetState<State>];
+
+type UseState = (slug: string) => <State>(defaultState: State) => GetSetState<State>;
+
+const STATES_RECORD: Record<symbol, GetSetState<any>> = {};
+
+export const useState: UseState =
+  (slug: string) =>
+  <State>(defaultState: State) => {
+    const symbol = Symbol.for(slug);
+
+    if (STATES_RECORD[symbol]) {
+      return STATES_RECORD[symbol];
+    }
+
+    let state: State = defaultState;
+
+    const getState = () => {
+      return state;
+    };
+
+    const setState = (updatedState: State): void => {
+      state = updatedState;
+      render();
+    };
+
+    const result: GetSetState<State> = [getState, setState];
+
+    STATES_RECORD[symbol] = result;
+
+    return result;
+  };
+
+let render: () => void;
+
+const bootstrap = (application: Component<{}>): void => {
+  const refresh = () => {
+    const root = document.getElementById("root");
+    const domElement = interpret(application({}));
+    root?.replaceChildren(domElement);
+  };
+
+  render = refresh;
+
+  refresh();
 };
 
 export default bootstrap;

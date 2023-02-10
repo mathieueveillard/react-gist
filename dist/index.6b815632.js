@@ -560,27 +560,33 @@ function hmrAccept(bundle, id) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 var _lib = require("./lib");
 var _libDefault = parcelHelpers.interopDefault(_lib);
-const app = {
-    tag: "div",
-    children: [
-        {
-            tag: "div",
-            children: "Click me to display an alert window!",
-            events: {
-                onClick: ()=>{
-                    alert("\uD83D\uDE0E");
-                }
+const Item = ({ text  })=>{
+    return {
+        tag: "div",
+        className: "item",
+        children: text,
+        events: {
+            onClick: ()=>{
+                alert(text);
             }
-        },
-        {
-            tag: "div",
-            children: "Lorem ipsum",
-            events: {}
         }
-    ],
-    events: {}
+    };
 };
-(0, _libDefault.default)(app);
+const List = ()=>{
+    const items = [
+        "First",
+        "Second",
+        "Third"
+    ];
+    return {
+        tag: "div",
+        children: items.map((text)=>Item({
+                text
+            })),
+        events: {}
+    };
+};
+(0, _libDefault.default)(List);
 
 },{"./lib":"3lJsP","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"3lJsP":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -588,6 +594,9 @@ parcelHelpers.defineInteropFlag(exports);
 const createElement = (tag)=>{
     return document.createElement(tag);
 };
+const addClassName = (className)=>(domElement)=>{
+        domElement.className = className;
+    };
 const bindEvents = ({ onClick  })=>(domElement)=>{
         if (onClick) domElement.onclick = onClick;
     };
@@ -597,8 +606,9 @@ const setText = (text)=>(domElement)=>{
 const appendTo = (parent)=>(child)=>{
         parent.appendChild(child);
     };
-const interpret = ({ tag , children , events  })=>{
+const interpret = ({ tag , className ="" , children , events  })=>{
     const domElement = createElement(tag);
+    addClassName(className)(domElement);
     bindEvents(events)(domElement);
     if (typeof children === "string") {
         setText(children)(domElement);
@@ -609,7 +619,7 @@ const interpret = ({ tag , children , events  })=>{
 };
 const bootstrap = (app)=>{
     const root = document.getElementById("root");
-    const domElement = interpret(app);
+    const domElement = interpret(app({}));
     root?.appendChild(domElement);
 };
 exports.default = bootstrap;

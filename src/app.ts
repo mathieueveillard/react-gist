@@ -1,24 +1,29 @@
-import bootstrap, { VirtualDomElement } from "./lib";
+import bootstrap, { Component } from "./lib";
 
-const app: VirtualDomElement = {
-  tag: "div",
-  children: [
-    {
-      tag: "div",
-      children: "Click me to display an alert window!",
-      events: {
-        onClick: () => {
-          alert("😎");
-        },
-      },
-    },
-    {
-      tag: "div",
-      children: "Lorem ipsum",
-      events: {},
-    },
-  ],
-  events: {},
+type Props = {
+  text: string;
 };
 
-bootstrap(app);
+const Item: Component<Props> = ({ text }) => {
+  return {
+    tag: "div",
+    className: "item",
+    children: text,
+    events: {
+      onClick: () => {
+        alert(text);
+      },
+    },
+  };
+};
+
+const List: Component<{}> = () => {
+  const items = ["First", "Second", "Third"];
+  return {
+    tag: "div",
+    children: items.map((text) => Item({ text })),
+    events: {},
+  };
+};
+
+bootstrap(List);

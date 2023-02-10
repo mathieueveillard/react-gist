@@ -4,13 +4,22 @@ type VirtualDomEvents = {
 
 export type VirtualDomElement = {
   tag: "div";
+  className?: string;
   children: string | VirtualDomElement[];
   events: VirtualDomEvents;
 };
 
+export type Component<Props extends {}> = (props: Props) => VirtualDomElement;
+
 const createElement = (tag: "div"): HTMLElement => {
   return document.createElement(tag);
 };
+
+const addClassName =
+  (className: string) =>
+  (domElement: HTMLElement): void => {
+    domElement.className = className;
+  };
 
 const bindEvents =
   ({ onClick }: VirtualDomEvents) =>
@@ -32,9 +41,9 @@ const appendTo =
     parent.appendChild(child);
   };
 
-const interpret = ({ tag, children, events }: VirtualDomElement): HTMLElement => {
+const interpret = ({ tag, className = "", children, events }: VirtualDomElement): HTMLElement => {
   const domElement = createElement(tag);
-
+  addClassName(className)(domElement);
   bindEvents(events)(domElement);
 
   if (typeof children === "string") {
@@ -46,9 +55,9 @@ const interpret = ({ tag, children, events }: VirtualDomElement): HTMLElement =>
   return domElement;
 };
 
-const bootstrap = (app: VirtualDomElement): void => {
+const bootstrap = (app: Component<{}>): void => {
   const root = document.getElementById("root");
-  const domElement = interpret(app);
+  const domElement = interpret(app({}));
   root?.appendChild(domElement);
 };
 

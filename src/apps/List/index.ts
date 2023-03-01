@@ -1,8 +1,8 @@
-import { Component, useState } from "../lib";
+import { Component, useState } from "../../lib";
 import Item from "./Item";
 
 const List: Component<{}> = () => {
-  const [getItems, setItems] = useState("List")([1, 2, 3]);
+  const [getItems, setItems] = useState("ListItems")([1, 2, 3]);
 
   const items = getItems();
 

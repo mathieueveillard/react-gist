@@ -1,4 +1,4 @@
-import { Component } from "../../lib";
+import { Component } from "../../../lib";
 import Counter from "./Counter";
 
 type Props = {

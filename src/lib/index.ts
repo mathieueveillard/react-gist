@@ -13,6 +13,8 @@ export type VirtualDomElement = {
 
 export type Component<Props extends {}> = (props: Props) => VirtualDomElement;
 
+let render: () => void;
+
 const createElement = (tag: Tag): HTMLElement => {
   return document.createElement(tag);
 };
@@ -61,11 +63,11 @@ type GetState<State> = () => State;
 
 type SetState<State> = (state: State) => void;
 
-type GetSetState<State> = [GetState<State>, SetState<State>];
+type StateContract<State> = [GetState<State>, SetState<State>];
 
-type UseState = (slug: string) => <State>(defaultState: State) => GetSetState<State>;
+type UseState = (slug: string) => <State>(defaultState: State) => StateContract<State>;
 
-const STATES_RECORD: Record<symbol, GetSetState<any>> = {};
+const STATES_RECORD: Record<symbol, StateContract<any>> = {};
 
 export const useState: UseState =
   (slug: string) =>
@@ -87,19 +89,17 @@ export const useState: UseState =
       render();
     };
 
-    const result: GetSetState<State> = [getState, setState];
+    const result: StateContract<State> = [getState, setState];
 
     STATES_RECORD[symbol] = result;
 
     return result;
   };
 
-let render: () => void;
-
-const bootstrap = (application: Component<{}>): void => {
+const bootstrap = (application: VirtualDomElement): void => {
   const refresh = () => {
     const root = document.getElementById("root");
-    const domElement = interpret(application({}));
+    const domElement = interpret(application);
     root?.replaceChildren(domElement);
   };
 

@@ -1,4 +1,4 @@
-import { Component, useState } from "../../../lib";
+import { Component, useState } from "../../../../lib";
 
 type Props = {
   index: number;

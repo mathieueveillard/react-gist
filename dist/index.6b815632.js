@@ -560,14 +560,16 @@ function hmrAccept(bundle, id) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 var _lib = require("./lib");
 var _libDefault = parcelHelpers.interopDefault(_lib);
-var _list = require("./List");
-var _listDefault = parcelHelpers.interopDefault(_list);
-(0, _libDefault.default)((0, _listDefault.default));
+var _renderProps = require("./RenderProps");
+var _renderPropsDefault = parcelHelpers.interopDefault(_renderProps);
+// import List from "./List";
+(0, _libDefault.default)((0, _renderPropsDefault.default));
 
-},{"./lib":"3lJsP","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./List":"d2lij"}],"3lJsP":[function(require,module,exports) {
+},{"./lib":"3lJsP","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./RenderProps":"1czec"}],"3lJsP":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "useState", ()=>useState);
+let render;
 const createElement = (tag)=>{
     return document.createElement(tag);
 };
@@ -613,7 +615,6 @@ const useState = (slug)=>(defaultState)=>{
         STATES_RECORD[symbol] = result;
         return result;
     };
-let render;
 const bootstrap = (application)=>{
     const refresh = ()=>{
         const root = document.getElementById("root");
@@ -655,134 +656,29 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}],"d2lij":[function(require,module,exports) {
+},{}],"1czec":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-var _lib = require("../lib");
-var _item = require("./Item");
-var _itemDefault = parcelHelpers.interopDefault(_item);
-const List = ()=>{
-    const [getItems, setItems] = (0, _lib.useState)("List")([
-        1,
-        2,
-        3
-    ]);
-    const items = getItems();
-    const addItem = ()=>{
-        const maxItem = items[items.length - 1] || 0;
-        setItems([
-            ...items,
-            maxItem + 1
-        ]);
-    };
-    const deleteItem = (index)=>()=>{
-            const nextItems = [
-                ...items
-            ];
-            nextItems.splice(index, 1);
-            setItems(nextItems);
-        };
+const Container = ({ render  })=>{
     return {
         tag: "div",
         children: [
-            {
-                tag: "button",
-                className: "button",
-                children: "Click here to add an item",
-                events: {
-                    onClick: addItem
-                }
-            },
-            {
-                tag: "div",
-                children: items.map((n, index)=>(0, _itemDefault.default)({
-                        index: n,
-                        onDelete: deleteItem(index)
-                    })),
-                events: {}
-            }
+            render(0)
         ],
         events: {}
     };
 };
-exports.default = List;
-
-},{"../lib":"3lJsP","./Item":"hbFHS","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"hbFHS":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _counter = require("./Counter");
-var _counterDefault = parcelHelpers.interopDefault(_counter);
-const Item = ({ index , onDelete  })=>{
-    return {
-        tag: "div",
-        className: "item flex",
-        children: [
-            {
+const App = ()=>{
+    return Container({
+        render: (n)=>({
                 tag: "div",
-                children: [
-                    (0, _counterDefault.default)({
-                        index
-                    })
-                ],
+                children: n.toString(),
                 events: {}
-            },
-            {
-                tag: "button",
-                className: "button",
-                children: "delete",
-                events: {
-                    onClick: onDelete
-                }
-            }
-        ],
-        events: {}
-    };
+            })
+    });
 };
-exports.default = Item;
+exports.default = App;
 
-},{"./Counter":"iN6ZS","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"iN6ZS":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _lib = require("../../../lib");
-const Counter = ({ index  })=>{
-    const [getCount, setCount] = (0, _lib.useState)(index.toString())(0);
-    const decrement = ()=>{
-        setCount(getCount() - 1);
-    };
-    const increment = ()=>{
-        setCount(getCount() + 1);
-    };
-    return {
-        tag: "div",
-        className: "item flex",
-        children: [
-            {
-                tag: "button",
-                className: "button",
-                children: "-",
-                events: {
-                    onClick: decrement
-                }
-            },
-            {
-                tag: "div",
-                children: getCount().toString(),
-                events: {}
-            },
-            {
-                tag: "button",
-                className: "button",
-                children: "+",
-                events: {
-                    onClick: increment
-                }
-            }
-        ],
-        events: {}
-    };
-};
-exports.default = Counter;
-
-},{"../../../lib":"3lJsP","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["lSgxL","kuM8f"], "kuM8f", "parcelRequire07d6")
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["lSgxL","kuM8f"], "kuM8f", "parcelRequire07d6")
 
 //# sourceMappingURL=index.6b815632.js.map

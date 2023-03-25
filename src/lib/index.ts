@@ -96,10 +96,10 @@ export const useState: UseState =
     return result;
   };
 
-const bootstrap = (application: VirtualDomElement): void => {
+const bootstrap = (application: Component<{}>): void => {
   const refresh = () => {
     const root = document.getElementById("root");
-    const domElement = interpret(application);
+    const domElement = interpret(application({}));
     root?.replaceChildren(domElement);
   };
 

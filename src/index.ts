@@ -1,4 +1,4 @@
 import bootstrap from "./lib";
-import RenderProps from "./apps/RenderProps";
+import List from "./apps/List";
 
-bootstrap(RenderProps({}));
+bootstrap(List);
